@@ -12,14 +12,9 @@ class Objekt:
         self.data = data 
         self.id = data['objektId']
         
-        self.veglenker = []
-        for veglenke in self.data['lokasjon']['veglenker']:
-            veglenke_rad = {
-                'id': veglenke['id'],
-                'fra': veglenke['fra'], 
-                'til': veglenke['til']
-                }
-            self.veglenker.append(veglenke_rad)
+        self.veglenker = data['lokasjon']['veglenker']
+        for i, veglenke in enumerate(self.veglenker):
+            del self.veglenker[i]['direction']
             
     def lengde(self):
         """Gjelder kun strekningsobjekttyper. Egen subklasse etter hvert?"""
