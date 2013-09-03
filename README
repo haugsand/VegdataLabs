@@ -1,1 +1,14 @@
-Readme for VegdataLabs. 
+Et verktøyskriv med klasser, funksjoner og script som benytter data fra 
+Nasjonal vegdatabank (NVDB) API. https://www.vegvesen.no/nvdb/api/
+
+Informasjon fra NVDB er også lett tilgjengelig på kart: 
+https://www.vegvesen.no/vegkart/vegkart/
+
+Kom med en tilbakemelding på Twitter: 
+https://twitter.com/search?q=%23nvdb
+
+Enda mer informasjon om NVDB: 
+http://data.norge.no/data/nasjonal-vegdatabank-api
+http://www.vegvesen.no/Fag/Teknologi/Nasjonal+vegdatabank
+http://www.vegdata.no/
+
