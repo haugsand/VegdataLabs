@@ -6,7 +6,11 @@ import csv
 api = 'https://www.vegvesen.no/nvdb/api'
 
 class Objekt:
-    'NVDB-objekt'
+    """Klasse som håndterer ett vegobjekt med den strukturen som leveres
+    gjennom NVDB API: 
+    https://www.vegvesen.no/nvdb/api/dokumentasjon/vegobjekter
+    
+    """
    
     def __init__(self, data):
         self.data = data 
@@ -17,15 +21,22 @@ class Objekt:
             del self.veglenker[i]['direction']
             
     def lengde(self):
-        """Gjelder kun strekningsobjekttyper. Egen subklasse etter hvert?"""
+        """Returnerer utledet lengde for et strekningsobjekt"""
         return self.data['strekningslengde']
         
     def egenskaper(self):
+        """Returnerer alle egenskaper"""
         return self.data['egenskaper']
                 
     def egenskap(self, egenskapstype, enum='', verdi=''):
-        """ Gir inn id på egenskap som skal returnere. 
-        Argumentet verdi er default-verdi """
+        """ Returnerer verdien til en valgt egenskapstype.
+        
+        Argumenter:
+        egenskapstype -- id på egenskapstype, angitt i datakatalogen
+        enum -- id på enum-verdi på valgt egenskapstype (default: '')
+        verdi -- verdi som returneres når egenskapen ikke finnes (default: '')
+        
+        """
         
         for egenskap in self.data['egenskaper']:
             if egenskap['id'] == egenskapstype:
@@ -36,11 +47,22 @@ class Objekt:
         return verdi
         
     def lokasjon(self, omradetype):
+        """Returnerer navnet på en angitt områdetype, for eksempel kommune
+        
+        Argumenter:
+        omradetype: navn på den områdetypen som skal returneres
+        
+        """
         return self.data['lokasjon'][omradetype]['navn']
         
     def assosiasjoner(self, objekttype=''):
-        """Hvis objekttype er satt, lag en liste med alle datterobjektene som
-        er av den typen. Hvis det ikke finnes noen, raise KeyError"""
+        """ Returnerer alle assosiasjoner til objektet, eller alle 
+        assosiasjoner til en angitt objekttype.
+        
+        Argumenter:
+        objekttype -- (default: '')
+        
+        """
         
         if objekttype:
             respons = []
@@ -57,24 +79,32 @@ class Objekt:
             return self.data['assosiasjoner']
             
 class Objekter:
-    'En liste med NVDB-objekter'
+    """En liste med NVDB-objekter. Får sikkert bruk for denne senere"""
     
 class Resultat:
-    'Resultat som returnes fra søkegrensesnittet. Støtter bare én objekttype'
+    """Klasse som håndterer den responsen som blir returnert ved å bruke
+    NVDB APIets søkegrensesnitt:
+    https://www.vegvesen.no/nvdb/api/dokumentasjon/sok
+    
+    Støtter foreløpig bare søk som returnerer én objekttype
+     
+    """
     
     def __init__(self, data):
         self.data = data
         self.antall = data['totaltAntallReturnert']
         
     def objekter(self):
+        """Returnerer en liste med NVDB-objekter"""
         return self.data['resultater'][0]['vegObjekter']
 
 def query(path, params=''):
-    """Leverer data på JSON-format fra NVDB. Returnerer et objekt.
+    """Leverer data fra NVDB APIet på JSON-format:
+    https://www.vegvesen.no/nvdb/api/
     
     Argumenter:
-    path -- Beskrivelse
-    params -- Beskrivelse (default: '')
+    path -- Sti bak adresse til NVDB API
+    params -- Parametere (default: '')
     
     """
     url = api+path
@@ -88,12 +118,13 @@ def query(path, params=''):
         raise Exception('Feil ved henting av '+r.url+': '+str(r.status_code))
 
 def query_search(objekttyper, lokasjon=''):
-    """Leverer data på JSON-format fra NVDB API gjennom sokegrensesnittet. 
-    Objekttyper må angis, men lokasjon er valgfritt. Returnerer et objekt.
+    """Leverer en instans av klassen Resultat etter en spørring
+    mot NVDB APIets søkegrensesnitt:
+    https://www.vegvesen.no/nvdb/api/dokumentasjon/sok/
     
     Argumenter:
-    objekttyper -- Beskrivelse
-    lokasjon -- Beskrivelse (default: '')
+    objekttyper -- En liste ned objekttyper
+    lokasjon -- En dictionary med lokasjoner (default: '')
     
     """
     sokobjekt = {}
@@ -104,11 +135,11 @@ def query_search(objekttyper, lokasjon=''):
     return Resultat(query('/sok', {'kriterie': json.dumps(sokobjekt)}))
     
 def csv_skriv(filnavn, input):
-    """Skriver en CSV-fil.
+    """Skriver innholdet i en liste med lister til en csv-fil.
     
     Argumenter:
-    filnavn -- Beskrivelse
-    input -- Beskrivelse
+    filnavn -- navn på fil som skal opprettes
+    input -- liste med lister
     
     """
     for ix, x in enumerate(input):
