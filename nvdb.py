@@ -3,7 +3,41 @@ import json
 import requests
 import csv
 
-api = 'https://www.vegvesen.no/nvdb/api'
+api = 'https:/www.vegvesen.no/nvdb/api'
+
+class Objekttyper:
+    """Klasse som håndterer en liste med objekttyper:
+    https://www.vegvesen.no/nvdb/api/dokumentasjon/datakatalog
+    
+    """
+    
+class ObjektType:
+    """Klasse som håndterer en enkelt objekttype:
+    https://www.vegvesen.no/nvdb/api/dokumentasjon/datakatalog/{objekttypeid}
+    
+    """
+    
+    def __init__(self, objekttype_id):
+        self.data = query('/datakatalog/objekttyper/%s' % objekttype_id)
+        self.id = objekttype_id
+        self.navn = self.data['navn']
+        self.egenskapstyper = self.data['egenskapsTyper']
+        
+        
+class EgenskapsType:
+    """Klasse som håndterer en egenskapstype:
+    https://www.vegvesen.no/nvdb/api/dokumentasjon/datakatalog/{objekttypeid}
+        
+    """
+
+    def __init__(self, data):
+        self.data = data
+        self.id = self.data['id']
+        self.navn = self.data['navn']
+        
+    def enum(self):
+        return self.data['enumVerdier']
+
 
 class Objekt:
     """Klasse som håndterer ett vegobjekt med den strukturen som leveres
@@ -92,7 +126,7 @@ class Resultat:
     
     def __init__(self, data):
         self.data = data
-        self.antall = data['totaltAntallReturnert']
+        self.antall = data['resultater'][0]['statistikk']['antallFunnet']
         
     def objekter(self):
         """Returnerer en liste med NVDB-objekter"""
@@ -153,3 +187,7 @@ def csv_skriv(filnavn, input):
         f.write(u'\ufeff'.encode('utf-8')) 
         writer = csv.writer(f, delimiter=';', quoting=csv.QUOTE_ALL)
         writer.writerows(input)
+
+def andel(a,b):
+
+    return round((a / float(b)),3)*100
