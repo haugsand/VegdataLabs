@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 
 import logging
-from nvdb import query_search
+from nvdb_utv import query_search
 from nvdb import ObjektType
 from nvdb import EgenskapsType
 from nvdb import andel 

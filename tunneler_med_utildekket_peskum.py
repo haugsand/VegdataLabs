@@ -12,7 +12,7 @@ requests_log = logging.getLogger("requests")
 requests_log.setLevel(logging.WARNING)
 
 objekttyper = [{'id': 581, 'antall': 10000}]
-lokasjon = {'region': [4]}
+lokasjon = {'fylke': [17]}
 tunneler = query_search(objekttyper, lokasjon)
 
 csv_list = []

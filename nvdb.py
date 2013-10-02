@@ -1,9 +1,8 @@
-﻿
+# -*- coding: utf-8 -*-
+
 import json
 import requests
 import csv
-
-api = 'https:/www.vegvesen.no/nvdb/api'
 
 class Objekttyper:
     """Klasse som håndterer en liste med objekttyper:
@@ -50,9 +49,18 @@ class Objekt:
         self.data = data 
         self.id = data['objektId']
         
-        self.veglenker = data['lokasjon']['veglenker']
-        for i, veglenke in enumerate(self.veglenker):
-            del self.veglenker[i]['direction']
+    def veglenker(self):
+        """Returnerer veglenker"""
+        
+        veglenker = []
+        for veglenke in self.data['lokasjon']['veglenker']:            
+            veglenkerad = {
+                'id': veglenke['id'],
+                'fra': veglenke['fra'], 
+                'til': veglenke['til']
+            }
+        veglenker.append(veglenkerad)        
+        return veglenker
             
     def lengde(self):
         """Returnerer utledet lengde for et strekningsobjekt"""
@@ -141,6 +149,9 @@ def query(path, params=''):
     params -- Parametere (default: '')
     
     """
+    
+    api = 'https://www.vegvesen.no/nvdb/api'
+    
     url = api+path
     headers = {'accept': 'application/vnd.vegvesen.nvdb-v1+json'}
     

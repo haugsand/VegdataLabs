@@ -12,7 +12,7 @@ requests_log = logging.getLogger("requests")
 requests_log.setLevel(logging.WARNING)
 
 objekttyper = [{'id': 581, 'antall': 10000}]
-lokasjon = {'region': [1,2,3,4,5]}
+lokasjon = {'fylke': [17]}
 tunneler = query_search(objekttyper, lokasjon)
 
 csv_list = []
@@ -49,10 +49,13 @@ for tunnel in tunneler.objekter():
             else:
                 row['lengde'] += tunnellop.lengde()
                 
-                if tunnellop.veglenker not in veglenker:
-                    veglenker += tunnellop.veglenker
+                if tunnellop.veglenker() not in veglenker:
+                    veglenker += tunnellop.veglenker()
     if veglenker:
-        objekttyper = [{'id': 570, 'antall': 10000}]
+        objekttyper = [{
+            'id': 570, 
+            'antall': 10000
+        }]
         lokasjon = {'veglenker': veglenker}
         trafikkulykker = query_search(objekttyper, lokasjon)
             
